@@ -60,14 +60,24 @@ Endpoints (ejemplo)
 - `DELETE /productos/<id>` — eliminar producto
 
 Descripción de responsabilidades
-- `db/conexion.py`: centraliza la configuración y entrega conexiones (pool). Todos los repositorios deben pedir la conexión aquí para evitar duplicar configuración.
+- `db/conexion.py`: centraliza la configuración y la gestión de conexiones a MySQL mediante un pool.
+  Responsabilidades:
+  - Cargar las variables de entorno necesarias para la conexión (host, usuario, contraseña, base, puerto).
+  - Inicializar y mantener un pool de conexiones (lazy-init) centralizando la gestión de conexiones.
+  - Proveer métodos como `inicializar_pool()`, `obtener_conexion()` y, preferiblemente, un context manager `conectar()`
+    para usar `with Conexion.conectar() as conn:` y garantizar que la conexión se devuelve al pool automáticamente.
+  - Manejar errores de inicialización y obtención de conexiones, y presentar mensajes claros (sin exponer secretos).
+  - Facilitar futuras mejoras (pooling, retries, métricas) sin tocar los repositorios.
 - `modelos/entidades`: validaciones y lógica ligera de dominio. Crear/validar objetos antes de persistir.
-- `modelos/repositorios`: encapsulan SQL y mapeo fila→entidad. Responsabilidad: abrir/cerrar conexiones (o usar un context manager central).
-- `rutas`: exponen la API y traducen JSON↔entidades.
+- `modelos/repositorios`: encapsulan SQL y mapean las filas de la base de datos a objetos del sistema. Responsabilidades: abrir/cerrar conexiones, ejecutar consultas parametrizadas para evitar SQL injection, mapear filas de la BD a instancias de entidades, manejar transacciones cuando una operacion requiere atomicidad (commit/rollback), y encapsular detalles SQL para los controladores/servicios no los conozcan.
+- `rutas` (controladores): reciben peticiones HTTP, validan y transforman datos, llaman a los repositorios
+  para realizar la lógica de negocio y devuelven las respuestas (JSON). Actúan como la capa de controladores de la API.
 
-Buenas prácticas sugeridas para alumnos
+Buenas prácticas sugeridas:
 - Validar datos en las entidades, no en los endpoints.
-- Usar `with` o `try/finally` para asegurar `conn.close()` si se toma conexión manualmente.
-- Mantener la `Conexion` como único lugar donde se gestiona pool/reintentos.
+
+- Los repositorios deben pedir la conexión a `db.conexion.Conexion` (no crear conexiones locales).
+- Preferir `Conexion.conectar()` en un `with` para evitar fugas de conexiones; si se usa `obtener_conexion()`, siempre cerrar la conexión en un `finally` o llamar a `conn.close()`.
+- No duplicar la configuración de conexión en otros módulos; centralizar cambios en `db/conexion.py` y mantenerlo como único lugar donde se gestiona pool/reintentos.
 - No versionar `.env`, agregarlo en el `.gitignore` de los proyectos para evitar que se versione.
 
