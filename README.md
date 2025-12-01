@@ -33,14 +33,14 @@ pip install -r requirements.txt
 ```
 DB_HOST=localhost
 DB_USER=api_tienda
-DB_PASS=apiTienda$1234
+DB_PASS=password_superseguro
 DB_NAME=tienda_ejemplo_python
 DB_PORT=3306
 ```
 
-> Nota: no uses comillas alrededor de los valores (por ejemplo, `DB_HOST=localhost`, ni `DB_HOST='localhost'`).
+> Nota: **no uses comillas alrededor de los valores** (ejemplo correcto `DB_HOST=localhost`; ejemplo incorrecto `DB_HOST='localhost'`).
 
-3. Ejecutar el script SQL para crear la base y datos de ejemplo (desde tu cliente MySQL):
+3. Ejecutar el script SQL para crear la base, con datos de ejemplo (desde tu cliente MySQL) y el usuario para que la api se conecte a MySQL:
 
 ```sql
 SOURCE db/db.sql;

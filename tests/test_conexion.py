@@ -1,6 +1,9 @@
 import sys
 import os
 
+# para ejecutar pruebas desde esta ruta debemos agregar el path del proyecto al sys.path
+# porque sino no encuentra el módulo db.conexion desde esta ubicación
+
 # Obtiene la ruta del directorio actual del script (tests/)
 current_dir = os.path.dirname(os.path.abspath(__file__))
 # Obtiene la ruta del directorio padre (proyecto/)
@@ -40,7 +43,7 @@ class TestConexion:
                 conexiones.append(conn)
                 print(colorama.Fore.GREEN + f" Conexión {i + 1} obtenida." + colorama.Style.RESET_ALL)
         except Exception as e:
-            print(colorama.Fore.RED + f"✗ Error al obtener una conexión: {e}" + colorama.Style.RESET_ALL)
+            print(colorama.Fore.RED + f"X Error al obtener una conexión: {e}" + colorama.Style.RESET_ALL)
         finally:
             i=0
             for conn in conexiones:
