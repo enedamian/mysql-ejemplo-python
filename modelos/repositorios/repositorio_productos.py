@@ -19,10 +19,11 @@ class RepositorioProductos:
             conexion = Conexion().obtener_conexion()
             cursor = conexion.cursor(dictionary=True)
             cursor.execute("SELECT id, nombre, precio, descripcion, stock FROM productos")
+            # Obtenemos todas las filas devueltas por la consulta
             filas = cursor.fetchall()
             productos = []
             for fila in filas:
-                print(fila)  # Para debug: muestra cada fila obtenida
+                #print(fila)  # Para debug: muestra cada fila obtenida
                 diccionario = {
                     "id": fila["id"],
                     "nombre": fila["nombre"],
@@ -52,7 +53,9 @@ class RepositorioProductos:
         try:
             conexion = Conexion().obtener_conexion()
             cursor = conexion.cursor(dictionary=True)
+            # armamos la consulta SQL con un placeholder para el ID (parametrizado)
             sql = "SELECT id, nombre, precio, descripcion, stock FROM productos WHERE id = %s"
+            # ejecutamos la consulta pasando el ID como parámetro
             cursor.execute(sql, [id])
             fila = cursor.fetchone() # obtenemos una sola fila (porque sabemos que el ID es único) o None si no existe
             
@@ -86,10 +89,12 @@ class RepositorioProductos:
         try:
             conexion=Conexion().obtener_conexion()
             cursor = conexion.cursor()
+            # Preparamos la consulta parametrizada SQL para insertar un nuevo producto
             sql = (
                 "INSERT INTO productos (nombre, precio, descripcion, stock) "
                 "VALUES (%s, %s, %s, %s)"
             )
+            # Preparamos los parámetros para la consulta en una tupla: (param1, param2, ...)
             parametros = (
                 nuevo.obtener_nombre(),
                 nuevo.obtener_precio(),
@@ -122,7 +127,7 @@ class RepositorioProductos:
         #actualizamos los valores nuevos en el producto obtenido
         if producto_actualizado:
             try:
-                
+                # Actualizamos los valores del producto con los datos proporcionados
                 if "nombre" in datos:
                     producto_actualizado.establecer_nombre(datos["nombre"])
                 if "precio" in datos:
@@ -131,6 +136,9 @@ class RepositorioProductos:
                     producto_actualizado.establecer_descripcion(datos["descripcion"])
                 if "stock" in datos:
                     producto_actualizado.establecer_stock(datos["stock"])
+                
+                # ahora que el objeto está actualizado, guardamos los cambios en la base de datos
+                # Preparamos la consulta SQL parametrizada para actualizar el producto
                 sql = "UPDATE productos SET nombre = %s, precio = %s, descripcion = %s, stock = %s WHERE id = %s"
                 parametros = (
                     producto_actualizado.obtener_nombre(),
@@ -164,11 +172,13 @@ class RepositorioProductos:
         try:
             conexion=Conexion().obtener_conexion()
             cursor = conexion.cursor()
-            cursor.execute("DELETE FROM productos WHERE id = %s", [id])
+            # Preparamos la consulta SQL parametrizada para eliminar el producto
+            sql = "DELETE FROM productos WHERE id = %s"
+            # Ejecutamos la consulta pasando el ID como parámetro
+            cursor.execute(sql, [id])
             conexion.commit()
             cursor.close()
             conexion.close()
             return cursor.rowcount > 0
         except Error as e:
             raise Exception(f"Error al eliminar producto con ID {id}: {e}")
-

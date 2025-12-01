@@ -28,3 +28,6 @@ INSERT INTO `productos` (`nombre`, `precio`, `descripcion`, `stock`) VALUES
 ('ASUS ROG Strix B550-F Gaming', 179.99, 'Placa base ATX con chipset B550 para procesadores AMD Ryzen.', 12),
 ('Cooler Master Hyper 212 Black Edition', 39.99, 'Disipador de CPU con ventilador de 120mm para una refrigeración eficiente.', 30),
 ('Seagate BarraCuda 2TB HDD', 54.99, 'Disco duro interno de 2TB con velocidad de 7200 RPM para almacenamiento masivo.', 18);
+
+CREATE USER 'api_tienda'@'localhost' IDENTIFIED BY 'password_superseguro';
+GRANT SELECT, INSERT, UPDATE, DELETE ON tienda_ejemplo_python.* TO 'api_tienda'@'localhost';
