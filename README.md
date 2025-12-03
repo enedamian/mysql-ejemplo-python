@@ -2,17 +2,17 @@
 
 Repositorio educativo: ejemplo de API REST con Flask y MySQL.
 
-Este proyecto está pensado como referencia para alumnos que deban practicar:
+Este proyecto está pensado como referencia para que prueben y practiquen:
 - Conexión a MySQL desde Python (`mysql-connector-python`).
 - Uso de un pool de conexiones centralizado.
 - Organización por capas: entidades, repositorios, rutas (endpoints).
-- Pruebas locales con un script SQL de seed.
+- Una vez creada la BD e implementada la API, pueden realizar las consultas con Postman, Insomnia o software similar.
 
 Contenido del repositorio (resumen)
 - `app.py` : arranque de la app Flask y registro de blueprints.
 - `requirements.txt` : dependencias del proyecto.
 - `db/` : scripts y utilidades de base de datos
-  - `db.sql` : script para crear la base de datos de ejemplo y tablas.
+  - `db.sql` : script para crear la base de datos de ejemplo y popular las tablas.
   - `conexion.py` : gestión del pool de conexiones (clase `Conexion`).
   - `test_conexion.py` : script que prueba la obtención/uso del pool.
 - `modelos/entidades/` : clases de dominio (por ejemplo `Producto`).
